@@ -1,0 +1,72 @@
+Analysis of MediKiosk Project Structure and Components
+
+1. Project Scope and Objectives
+- Complete comprehensive report covering all aspects of MediKiosk project
+- Include UI details, technical architecture, API endpoints, workflows, and all features
+- Focus on patient and doctor frontends, backend engines, data models, and security
+
+2. Frontend Architecture
+- React 18 + TypeScript with Vite + Tailwind CSS
+- Two separate frontends: patient kiosk mode and doctor dashboard
+- 11 patient pages: WelcomePage, LanguagePage, PatientIdentityPage, ModeSelectionPage, ConversationPage, AyushIntakePage, DocumentUploadPage, OCRVerifyPage, QueueStatusPage, KioskLandingPage, WelcomePage
+- 3 doctor pages: DoctorDashboard, CaseDetail, and implied login page
+- UI components library with Spinner, LoadingState, EmptyState, ErrorState, InfoBanner, Button (6 variants), Card, Badge (6 variants), ProgressBar, Input, Select, KioskHeader, ModePill
+- TypeScript types for all UI states and data structures
+
+3. Backend Architecture
+- FastAPI (ASGI) with SQLAlchemy ORM and Alembic migrations
+- Core modules: config.py (20+ settings), database.py (engine, SessionLocal, get_db), security.py (JWT, role dependencies)
+- API routers: sessions, clinical_history, ayush, ocr, queue, doctor, fhir
+- Services layer: conversation_engine, questionnaire_schema, triage/red_flag_engine, ayush_engine, fhir_builder
+- FHIR compliance with HL7 R4 resources (Patient, Encounter, Composition, Observation)
+
+4. API Design
+- 50+ endpoints covering patient and doctor workflows
+- JWT authentication with role-based access (patient/physician/admin)
+- Multilingual support (23 Indian languages) with capability tracking (ASR, TTS, UI, questionnaire, conversation)
+- Queue management with 6 token statuses and priority levels
+- OCR pipeline with Tesseract and Vision API abstraction
+- FHIR bundle generation for HL7 R4 compliance
+
+5. UI Components and Details
+- KioskHeader with branding and mode selector
+- ModePill components for Allopathy/AYUSH selection
+- Language selection with 23 language buttons, search filter, and major languages filter
+- Identity verification with ABHA/Guest mode toggle
+- Conversation flow with progress bar and section progression
+- AYUSH assessment with 8-question adaptive flow
+- Document upload with OCR verification and human-in-the-loop entity verification
+- Queue status display with token details, priority, red flags, and waiting room view
+- Doctor dashboard with case filtering, summary cards, red flag indicators, and FHIR/timeline views
+
+6. Data Models
+- PatientSession: session_id, ABHA/guest modes, temp_id, consent, token_number, department, mode, language_code, status
+- Physician: physician_id, email, hashed_password, full_name, specialization, department, role, is_active, is_verified
+- ClinicalCase: case_id, session_id, language/department/mode, clinical_history, ayush_profile, conversation_state, red_flags, provenance, status, completion_percentage, fhir metadata
+- QueueToken: token_id, token_number, department, mode, session_id, status (6 states), priority, has_red_flags, queue_position, called_at, physician_id
+- ClinicalDocument: document_id, session_id, document_type, original_filename, file_path, mime_type, file_size_bytes, ocr_provider, raw_text, ocr_confidence, structured_entities, processing_status, warnings, requires_verification
+- ClinicalFact: fact_id, category, label, value, status, confidence, provenance
+- FHIRBundle: standardized HL7 R4 output with Patient, Encounter, Composition, Observation resources
+
+7. Authentication & Security
+- JWT token generation with create_access_token and decode_token functions
+- Role-based access: get_current_user, require_physician, require_patient, verify_session_ownership
+- ABHA/guest authentication modes for patient sessions
+- Secure token handling with expiration and verification
+- CORS configuration with specific origins
+
+8. Workflow and User Flow
+- Patient flow: KioskLandingPage → WelcomePage → LanguagePage → PatientIdentityPage → ModeSelectionPage → ConversationPage/AyushIntakePage → DocumentUploadPage → QueueStatusPage
+- Doctor flow: DoctorLogin → DoctorDashboard → CaseDetail (with FHIR/timeline/summary views)
+- Conversation engine manages SOCRATES/HPI questionnaire with 70+ questions across 5 sections
+- AYUSH engine calculates constitutional profile with 8 questions mapping to 5 elements
+- Red flag engine detects 6 critical conditions with negation handling
+- OCR pipeline processes documents with Tesseract and Vision API
+- FHIR builder creates compliant bundles with all required resources
+
+9. Testing and Deployment
+- Docker-compose.yml for service orchestration (backend port8000, frontend-patient port5173, frontend-doctor port5174)
+- alembic.ini and env.py for migration configuration
+- Comprehensive type definitions for all frontend and backend components
+- 23-language registry with detailed capability tracking
+- Complete UI/UX flow documentation for both patient and doctor interfaces

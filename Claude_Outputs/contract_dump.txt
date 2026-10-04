@@ -1,0 +1,258 @@
+POST /api/v1/sessions/start — current contract (read-only dump, no modifications)
+================================================================================
+
+File paths (verified):
+  backend/app/api/v1/sessions.py               (endpoint)
+  backend/app/schemas/auth.py                  (request + response schemas)
+  frontend-patient/src/services/api.ts         (frontend call)
+  frontend-patient/src/lib/modeMap.ts          (normalizeMode)
+  frontend-patient/src/pages/PatientIdentityPage.tsx  (payload builder)
+
+1. BACKEND ENDPOINT  (backend/app/api/v1/sessions.py, line 26)
+---------------------------------------------------------------
+@router.post("/start", response_model=PatientSessionResponse)
+async def start_patient_session(
+    request: PatientSessionStart,
+    db: Session = Depends(get_db)
+):
+    """Start a new patient session."""
+    session_id = str(uuid.uuid4())
+
+    # Generate temp ID if guest mode
+    temp_id = None
+    if request.is_guest:
+        temp_id = f"TEMP-OPD-{str(uuid.uuid4())[:8].upper()}"
+
+    # Create patient session
+    patient_session = PatientSession(
+        session_id=session_id,
+        abha_id=request.abha_id,
+        abha_address=request.abha_address,
+        is_guest=request.is_guest,
+        temp_id=temp_id,
+        patient_name=request.patient_name,
+        patient_age=request.patient_age,
+        patient_gender=request.patient_gender,
+        patient_phone=request.patient_phone,
+        consent_given=request.consent_given,
+        consent_scope=request.consent_scope,
+        consent_timestamp=datetime.utcnow() if request.consent_given else None,
+        token_number=request.token_number,
+        department=request.department,
+        mode=request.mode,
+        language_code=request.language_code,
+        status="active"
+    )
+
+    db.add(patient_session)
+
+    # Create clinical case
+    case = ClinicalCase(
+        case_id=str(uuid.uuid4()),
+        session_id=session_id,
+        language_code=request.language_code,
+        department=request.department,
+        mode=request.mode,
+        status="in_progress"
+    )
+
+    db.add(case)
+
+    # Create queue token if token_number provided
+    if request.token_number:
+        token = QueueToken(
+            token_id=str(uuid.uuid4()),
+            token_number=request.token_number,
+            department=request.department or "General",
+            mode=request.mode,
+            session_id=session_id,
+            status="history_pending"
+        )
+        db.add(token)
+
+    db.commit()
+
+    # Create JWT token
+    token_data = {
+        "sub": session_id,
+        "role": "patient",
+        "session_id": session_id
+    }
+    access_token = create_access_token(token_data)
+
+    return PatientSessionResponse(
+        session_id=session_id,
+        temp_id=temp_id,
+        token=access_token,
+        token_type="bearer"
+    )
+
+Mount path: router is included at /api/v1/sessions → final route is
+  POST /api/v1/sessions/start
+
+
+2. BACKEND REQUEST SCHEMA  (backend/app/schemas/auth.py, lines 34-55)
+---------------------------------------------------------------------
+class PatientSessionStart(BaseModel):
+    """Patient session start request."""
+    abha_id: Optional[str] = Field(None, max_length=100)
+    abha_address: Optional[str] = Field(None, max_length=100)
+    is_guest: bool = False
+    patient_name: Optional[str] = Field(None, max_length=200)
+    patient_age: Optional[str] = Field(None, max_length=10)
+    patient_gender: Optional[str] = Field(None, max_length=20)
+    patient_phone: Optional[str] = Field(None, max_length=20)
+    consent_given: bool = False
+    consent_scope: Optional[List[str]] = None
+    token_number: Optional[str] = Field(None, max_length=20)
+    department: Optional[str] = Field(None, max_length=100)
+    mode: Optional[str] = Field(None, max_length=20)
+    language_code: Optional[str] = Field(None, max_length=10)
+
+    @field_validator('mode')
+    @classmethod
+    def validate_mode(cls, v):
+        if v and v not in ['allopathy', 'ayush']:
+            raise ValueError('mode must be either "allopathy" or "ayush"')
+        return v
+
+
+3. BACKEND RESPONSE SCHEMA  (backend/app/schemas/auth.py, lines 58-66)
+----------------------------------------------------------------------
+class PatientSessionResponse(BaseModel):
+    """Patient session response."""
+    session_id: str
+    temp_id: Optional[str] = None
+    token: str
+    token_type: str = "bearer"
+
+    class Config:
+        from_attributes = True
+
+
+4. FRONTEND CALL  (frontend-patient/src/services/api.ts, lines 18-20)
+---------------------------------------------------------------------
+export const sessionApi = {
+  start: (data: Partial<PatientIdentity>) => api.post('/sessions/start', data).then(r => r.data as PatientSession),
+};
+
+Axios baseURL is '/api/v1', so the actual network call is POST /api/v1/sessions/start.
+
+
+5. normalizeMode + helpers  (frontend-patient/src/lib/modeMap.ts, full file)
+---------------------------------------------------------------------------
+/** Single source of truth for mode/stream mapping. UI display and API values cannot drift. */
+export const MODE_MAP = {
+  allopathy: { api: 'allopathy', stream: null as string | null, label: 'Allopathy' },
+  ayush:     { api: 'ayush',     stream: 'ayurveda',              label: 'AYUSH' },
+} as const;
+
+export const normalizeMode = (raw: string): 'allopathy' | 'ayush' => {
+  const low = (raw || '').toString().toLowerCase();
+  if (low === 'allopathy' || low === 'ayush') return low as 'allopathy' | 'ayush';
+  // Allow stream-ID confusion (ayurveda etc) to resolve to ayush
+  if (['ayurveda','siddha','unani','homoeopathy','yoga_naturopathy'].includes(low)) return 'ayush';
+  return 'allopathy';
+};
+
+export const streamFromMode = (mode: 'allopathy' | 'ayush', selectedStream?: string): string =>
+  mode === 'ayush' ? (selectedStream || 'ayurveda') : 'allopathy';
+
+
+6. PAYLOAD BUILDER  (frontend-patient/src/pages/PatientIdentityPage.tsx, lines 19-46)
+-------------------------------------------------------------------------------------
+  const handleContinue = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const lang = sessionStorage.getItem('medikiosk_lang') || 'en';
+      const department = sessionStorage.getItem('medikiosk_department') || 'General Medicine';
+      const apiMode = normalizeMode(sessionStorage.getItem('medikiosk_mode') || 'allopathy');
+      const isGuest = mode === 'guest';
+      const payload: any = {
+        is_guest: isGuest,
+        patient_name: name || (isGuest ? 'Guest' : 'Patient'),
+        patient_age: age ? String(age) : undefined,
+        patient_gender: gender || undefined,
+        consent_given: consent,
+        consent_scope: ['intake', 'voice', 'ocr', 'fhir'],
+        abha_address: (!isGuest && name.includes('-')) ? name : undefined,
+        token_number: isGuest ? token || undefined : undefined,
+        department,
+        mode: apiMode,
+        language_code: lang,
+      };
+      if (!isGuest && name.includes('-')) {
+        payload.abha_id = name;
+      }
+      const res = await sessionApi.start(payload);
+      sessionStorage.setItem('medikiosk_token', res.token);
+      sessionStorage.setItem('medikiosk_session', JSON.stringify(res));
+      navigate('/mode');
+    } catch (e: any) {
+      ...
+    }
+  };
+
+
+7a. ALLOPATHY payload  (guest, name="Test", age="30", OPD token="101", lang="en")
+--------------------------------------------------------------------------------
+{
+  "is_guest": true,
+  "patient_name": "Test",
+  "patient_age": "30",
+  "patient_gender": "Male",
+  "consent_given": true,
+  "consent_scope": ["intake", "voice", "ocr", "fhir"],
+  "token_number": "101",
+  "department": "General Medicine",
+  "mode": "allopathy",
+  "language_code": "en"
+}
+
+  - medikiosk_mode = "allopathy"  ->  normalizeMode() returns "allopathy"
+  - patient_age is a STRING (matches Optional[str] in schema)
+  - consent_scope is a LIST (matches Optional[List[str]] in schema)
+  - is_guest=true; no abha_id/abha_address set (guest branch)
+  - language_code uses ISO 639-1 short code ("en") — matches schema max_length=10
+
+
+7b. AYUSH payload  (guest, name="Test", age="30", OPD token="202", lang="hi")
+----------------------------------------------------------------------------
+{
+  "is_guest": true,
+  "patient_name": "Test",
+  "patient_age": "30",
+  "patient_gender": "Male",
+  "consent_given": true,
+  "consent_scope": ["intake", "voice", "ocr", "fhir"],
+  "token_number": "202",
+  "department": "General Medicine",
+  "mode": "ayush",
+  "language_code": "hi"
+}
+
+  - medikiosk_mode = "ayush"  ->  normalizeMode() returns "ayush"
+  - same shape as allopathy; only `mode` and `language_code` differ
+
+
+Notes
+-----
+- patient_age MUST be a string to satisfy PatientSessionStart.patient_age: Optional[str].
+  The form input is <input type="number"> (returns a JS number) so the builder wraps it
+  with String(age) before sending.
+- consent_scope MUST be a JSON array, not a CSV string, to satisfy
+  PatientSessionStart.consent_scope: Optional[List[str]].
+- mode is constrained by the backend's field_validator to {"allopathy", "ayush"};
+  UI display values "Allopathy" / "AYUSH" pass through normalizeMode() which lowercases
+  and accepts both already-correct values and stream IDs as a fallback.
+- language_code uses the ISO 639-1 short code emitted by LanguagePage
+  ("en", "hi", "ta", ...), which fits the schema's max_length=10.
+- The abha branch (mode === 'abha' on the identity page) sets
+  payload.abha_address = name (when name includes '-') and additionally
+  payload.abha_id = name; for guest sessions these are both undefined / omitted.
+- After a 200 response, the frontend navigates to /mode (ModeSelectionPage);
+  ModeSelectionPage then navigates to /conversation which starts the clinical interview.
+- Error handling: any 422 surfaces as
+    "Server rejected the form — <field>: <message>"
+  extracted from FastAPI's detail array.

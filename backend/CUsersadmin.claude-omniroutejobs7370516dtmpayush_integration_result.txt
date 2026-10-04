@@ -1,0 +1,37 @@
+AYUSH Integration — Completed Result
+======================================
+
+DB FIX
+- ALTER TABLE clinical_cases ADD COLUMN mode_stream VARCHAR(30)
+- DB file: medikiosk.db (verified column present)
+
+ENGINE (conversation_engine.py)
+- Import cleaned (removed duplicate typing/List / get_ayush_questionnaire)
+- process_answer signature fixed (no duplicate answer_value param)
+- AYUSH profile block: if self.mode == "ayush" and self.stream == "ayurveda":
+  * Builds ayush_answers from answer_records (normalized_value = answer_value)
+  * Calls AyushEngine().calculate_profile(ayush_answers)
+  * Stores to case.ayush_profile; returns in dict
+- Allopathy guard intact: profile only for ayurveda stream; allopathy returns ayush_profile: None
+
+LIVE API TESTS (using running uvicorn server)
+- TEST A (allopathy): mode=allopathy, stream=None, ayush_profile=None ✓
+- TEST B.1 (ayush start): first_question=ayurveda_body_build, mode=ayush, stream=ayurveda ✓
+- TEST B.2 (ayush respond with answer_value="SLIM"): 
+  * Response keys include ayush_profile, mode, stream, next_question, is_complete
+  * ayush_profile present = True; profile has prakriti/agni/koshtha/satva/ahara_vihara/answers
+  * Stable internal value preserved: answer_value="SLIM" stored in answer_records
+
+FRONTEND
+- App.tsx: /ayush-intake -> Navigate to /conversation ✓
+- ConversationPage.tsx: ayushProfile state; summary card for mode==ayush; stays on page when complete (no navigate to /documents) ✓
+- CaseDetail.tsx: AYURVEDA INTAKE PROFILE card with "Indicative intake assessment — practitioner verification required"; prakriti/agni/koshtha/satva/ahara-vihara sections with confidence percentages ✓
+
+CONSTRAINTS MET
+- Did NOT rewrite AyushEngine
+- Did NOT duplicate scoring logic
+- Did NOT break Allopathy
+- Did NOT create second intake path
+- Stable internal option values stored (SLIM, HIGH, etc.) not translated text
+- Patient-facing profile labels: "indicative" / "Not a medical diagnosis. Practitioner verification required."
+- Doctor-facing profile: verification-required subtitle

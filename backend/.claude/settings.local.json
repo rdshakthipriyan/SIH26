@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(Out-File -FilePath \"test_output.txt\" -Encoding utf8)",
+      "Bash(Get-Content \"test_output.txt\")"
+    ]
+  }
+}

@@ -1,0 +1,554 @@
+[1m============================= test session starts =============================[0m
+platform win32 -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- C:\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Projects\New folder\backend
+plugins: anyio-4.14.2
+[1mcollecting ... [0mcollected 20 items
+
+app/tests/test_medikiosk.py::TestAuthentication::test_physician_register [31mFAILED[0m[31m [  5%][0m
+app/tests/test_medikiosk.py::TestAuthentication::test_physician_login [31mFAILED[0m[31m [ 10%][0m
+app/tests/test_medikiosk.py::TestAuthentication::test_invalid_login [32mPASSED[0m[31m [ 15%][0m
+app/tests/test_medikiosk.py::TestAuthentication::test_patient_session_start [32mPASSED[0m[31m [ 20%][0m
+app/tests/test_medikiosk.py::TestAuthentication::test_patient_abha_session [32mPASSED[0m[31m [ 25%][0m
+app/tests/test_medikiosk.py::TestLanguages::test_get_languages [32mPASSED[0m[31m    [ 30%][0m
+app/tests/test_medikiosk.py::TestLanguages::test_language_structure [32mPASSED[0m[31m [ 35%][0m
+app/tests/test_medikiosk.py::TestLanguages::test_tamil_language [32mPASSED[0m[31m   [ 40%][0m
+app/tests/test_medikiosk.py::TestConversation::test_start_conversation [32mPASSED[0m[31m [ 45%][0m
+app/tests/test_medikiosk.py::TestConversation::test_conversation_response [32mPASSED[0m[31m [ 50%][0m
+app/tests/test_medikiosk.py::TestConversation::test_extraction [32mPASSED[0m[31m    [ 55%][0m
+app/tests/test_medikiosk.py::TestNegation::test_english_negation [32mPASSED[0m[31m  [ 60%][0m
+app/tests/test_medikiosk.py::TestRedFlags::test_chest_pain_red_flag [31mFAILED[0m[31m [ 65%][0m
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_answer_submission [32mPASSED[0m[31m [ 70%][0m
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_profile_calculation [32mPASSED[0m[31m [ 75%][0m
+app/tests/test_medikiosk.py::TestSecurity::test_patient_cannot_access_other_session [32mPASSED[0m[31m [ 80%][0m
+app/tests/test_medikiosk.py::TestSecurity::test_patient_cannot_access_doctor_endpoints [32mPASSED[0m[31m [ 85%][0m
+app/tests/test_medikiosk.py::TestQueue::test_queue_list [32mPASSED[0m[31m           [ 90%][0m
+app/tests/test_medikiosk.py::TestQueue::test_queue_status_update [32mPASSED[0m[31m  [ 95%][0m
+app/tests/test_medikiosk.py::TestProvenance::test_voice_provenance [32mPASSED[0m[31m [100%][0m
+
+================================== FAILURES ===================================
+[31m[1m_________________ TestAuthentication.test_physician_register __________________[0m
+
+self = <app.tests.test_medikiosk.TestAuthentication object at 0x0000012DFFAE7110>
+client = <starlette.testclient.TestClient object at 0x0000012D867567B0>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_physician_register[39;49;00m([96mself[39;49;00m, client):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test physician registration."""[39;49;00m[90m[39;49;00m
+>       response = client.post([33m"[39;49;00m[33m/api/v1/sessions/physician/register[39;49;00m[33m"[39;49;00m, json={[90m[39;49;00m
+            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mdoctor@example.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mpassword[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mSecurePass123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mfull_name[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mDr. Test Physician[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mspecialization[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mGeneral Medicine[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mdepartment[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mOPD[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mregistration_number[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mREG12345[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        })[90m[39;49;00m
+
+[1m[31mapp\tests\test_medikiosk.py[0m:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:556: in post
+    [0m[94mreturn[39;49;00m [96msuper[39;49;00m().post([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1204: in post
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.request([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:455: in request
+    [0m[94mreturn[39;49;00m [96msuper[39;49;00m().request([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:797: in request
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.send(request, auth=auth, follow_redirects=follow_redirects)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:980: in send
+    [0mresponse = [96mself[39;49;00m._send_handling_auth([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1008: in _send_handling_auth
+    [0mresponse = [96mself[39;49;00m._send_handling_redirects([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1043: in _send_handling_redirects
+    [0mresponse = [96mself[39;49;00m._send_single_request(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1076: in _send_single_request
+    [0mresponse = transport.handle_request(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:354: in handle_request
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:351: in handle_request
+    [0mportal.call([96mself[39;49;00m.app, scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\anyio\from_thread.py[0m:338: in call
+    [0m[94mreturn[39;49;00m cast(T_Retval, [96mself[39;49;00m.start_task_soon(func, *args).result())[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Python314\Lib\concurrent\futures\_base.py[0m:454: in result
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.__get_result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Python314\Lib\concurrent\futures\_base.py[0m:396: in __get_result
+    [0m[94mraise[39;49;00m [96mself[39;49;00m._exception[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\anyio\from_thread.py[0m:263: in _call_func
+    [0mretval = [94mawait[39;49;00m retval_or_awaitable[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py[0m:1163: in __call__
+    [0m[94mawait[39;49;00m [96msuper[39;49;00m().[92m__call__[39;49;00m(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\applications.py[0m:96: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.middleware_stack(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py[0m:186: in __call__
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py[0m:164: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, _send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py[0m:88: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\exceptions.py[0m:63: in __call__
+    [0m[94mawait[39;49;00m wrap_app_handling_exceptions([96mself[39;49;00m.app, conn)(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:53: in wrapped_app
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:42: in wrapped_app
+    [0m[94mawait[39;49;00m app(scope, receive, sender)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\middleware\asyncexitstack.py[0m:18: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py[0m:670: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.middleware_stack(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:2734: in app
+    [0m[94mawait[39;49;00m route.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1780: in handle
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.original_router.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:2789: in handle
+    [0m[94mawait[39;49;00m included_router._handle_selected(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1800: in _handle_selected
+    [0m[94mawait[39;49;00m original_route.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1279: in handle
+    [0m[94mawait[39;49;00m app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:158: in app
+    [0m[94mawait[39;49;00m wrap_app_handling_exceptions(app, request)(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:53: in wrapped_app
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:42: in wrapped_app
+    [0m[94mawait[39;49;00m app(scope, receive, sender)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:144: in app
+    [0mresponse = [94mawait[39;49;00m f(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:706: in app
+    [0mraw_response = [94mawait[39;49;00m run_endpoint_function([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:352: in run_endpoint_function
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m dependant.call(**values)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mapp\api\v1\sessions.py[0m:120: in register_physician
+    [0mhashed_password=get_password_hash(request.password),[90m[39;49;00m
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mapp\core\security.py[0m:31: in get_password_hash
+    [0m[94mreturn[39;49;00m pwd_context.hash(truncated)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\context.py[0m:2258: in hash
+    [0m[94mreturn[39;49;00m record.hash(secret, **kwds)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:779: in hash
+    [0m[96mself[39;49;00m.checksum = [96mself[39;49;00m._calc_checksum(secret)[90m[39;49;00m
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:591: in _calc_checksum
+    [0m[96mself[39;49;00m._stub_requires_backend()[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2254: in _stub_requires_backend
+    [0m[96mcls[39;49;00m.set_backend()[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2156: in set_backend
+    [0m[94mreturn[39;49;00m owner.set_backend(name, dryrun=dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2163: in set_backend
+    [0m[94mreturn[39;49;00m [96mcls[39;49;00m.set_backend(name, dryrun=dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2188: in set_backend
+    [0m[96mcls[39;49;00m._set_backend(name, dryrun)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2311: in _set_backend
+    [0m[96msuper[39;49;00m(SubclassBackendMixin, [96mcls[39;49;00m)._set_backend(name, dryrun)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2224: in _set_backend
+    [0mok = loader(**kwds)[90m[39;49;00m
+         ^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:626: in _load_backend_mixin
+    [0m[94mreturn[39;49;00m mixin_cls._finalize_backend_mixin(name, dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:421: in _finalize_backend_mixin
+    [0m[94mif[39;49;00m detect_wrap_bug(IDENT_2A):[90m[39;49;00m
+       ^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:380: in detect_wrap_bug
+    [0m[94mif[39;49;00m verify(secret, bug_hash):[90m[39;49;00m
+       ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:792: in verify
+    [0m[94mreturn[39;49;00m consteq([96mself[39;49;00m._calc_checksum(secret), chk)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <passlib.handlers.bcrypt._BcryptBackend object at 0x0000012D8681A2C0>
+secret = b'01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345...7890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_calc_checksum[39;49;00m([96mself[39;49;00m, secret):[90m[39;49;00m
+        [90m# bcrypt behavior:[39;49;00m[90m[39;49;00m
+        [90m#   secret must be bytes[39;49;00m[90m[39;49;00m
+        [90m#   config must be ascii bytes[39;49;00m[90m[39;49;00m
+        [90m#   returns ascii bytes[39;49;00m[90m[39;49;00m
+        secret, ident = [96mself[39;49;00m._prepare_digest_args(secret)[90m[39;49;00m
+        config = [96mself[39;49;00m._get_config(ident)[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(config, unicode):[90m[39;49;00m
+            config = config.encode([33m"[39;49;00m[33mascii[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>       [96mhash[39;49;00m = _bcrypt.hashpw(secret, config)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])[0m
+
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:655: ValueError
+---------------------------- Captured stdout setup ----------------------------
+Initializing MediKiosk backend...
+2026-08-29 02:09:34,343 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-08-29 02:09:34,344 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("patient_sessions")
+2026-08-29 02:09:34,345 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:34,348 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("physicians")
+2026-08-29 02:09:34,349 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:34,350 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_cases")
+2026-08-29 02:09:34,350 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:34,351 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("queue_tokens")
+2026-08-29 02:09:34,359 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:34,360 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_documents")
+2026-08-29 02:09:34,360 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:34,362 INFO sqlalchemy.engine.Engine COMMIT
+Database initialized
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("patient_sessions")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("physicians")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_cases")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("queue_tokens")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_documents")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2718 COMMIT
+------------------------------ Captured log call ------------------------------
+[33mWARNING [0m passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+-------------------------- Captured stdout teardown ---------------------------
+Shutting down MediKiosk backend...
+[31m[1m___________________ TestAuthentication.test_physician_login ___________________[0m
+
+self = <app.tests.test_medikiosk.TestAuthentication object at 0x0000012D86814CD0>
+client = <starlette.testclient.TestClient object at 0x0000012D86817610>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_physician_login[39;49;00m([96mself[39;49;00m, client):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test physician login."""[39;49;00m[90m[39;49;00m
+        [90m# Register first[39;49;00m[90m[39;49;00m
+>       client.post([33m"[39;49;00m[33m/api/v1/sessions/physician/register[39;49;00m[33m"[39;49;00m, json={[90m[39;49;00m
+            [33m"[39;49;00m[33memail[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mdoctor_login@example.com[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mpassword[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mSecurePass123[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mfull_name[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mDr. Test Login[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mspecialization[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mGeneral Medicine[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mdepartment[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mOPD[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            [33m"[39;49;00m[33mregistration_number[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mREG_LOGIN_123[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        })[90m[39;49;00m
+
+[1m[31mapp\tests\test_medikiosk.py[0m:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:556: in post
+    [0m[94mreturn[39;49;00m [96msuper[39;49;00m().post([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1204: in post
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.request([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:455: in request
+    [0m[94mreturn[39;49;00m [96msuper[39;49;00m().request([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:797: in request
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.send(request, auth=auth, follow_redirects=follow_redirects)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:980: in send
+    [0mresponse = [96mself[39;49;00m._send_handling_auth([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1008: in _send_handling_auth
+    [0mresponse = [96mself[39;49;00m._send_handling_redirects([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1043: in _send_handling_redirects
+    [0mresponse = [96mself[39;49;00m._send_single_request(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\httpx2\_client.py[0m:1076: in _send_single_request
+    [0mresponse = transport.handle_request(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:354: in handle_request
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\testclient.py[0m:351: in handle_request
+    [0mportal.call([96mself[39;49;00m.app, scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\anyio\from_thread.py[0m:338: in call
+    [0m[94mreturn[39;49;00m cast(T_Retval, [96mself[39;49;00m.start_task_soon(func, *args).result())[90m[39;49;00m
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Python314\Lib\concurrent\futures\_base.py[0m:454: in result
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.__get_result()[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Python314\Lib\concurrent\futures\_base.py[0m:396: in __get_result
+    [0m[94mraise[39;49;00m [96mself[39;49;00m._exception[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\anyio\from_thread.py[0m:263: in _call_func
+    [0mretval = [94mawait[39;49;00m retval_or_awaitable[90m[39;49;00m
+             ^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\applications.py[0m:1163: in __call__
+    [0m[94mawait[39;49;00m [96msuper[39;49;00m().[92m__call__[39;49;00m(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\applications.py[0m:96: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.middleware_stack(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py[0m:186: in __call__
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\errors.py[0m:164: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, _send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\cors.py[0m:88: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\middleware\exceptions.py[0m:63: in __call__
+    [0m[94mawait[39;49;00m wrap_app_handling_exceptions([96mself[39;49;00m.app, conn)(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:53: in wrapped_app
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:42: in wrapped_app
+    [0m[94mawait[39;49;00m app(scope, receive, sender)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\middleware\asyncexitstack.py[0m:18: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\routing.py[0m:670: in __call__
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.middleware_stack(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:2734: in app
+    [0m[94mawait[39;49;00m route.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1780: in handle
+    [0m[94mawait[39;49;00m [96mself[39;49;00m.original_router.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:2789: in handle
+    [0m[94mawait[39;49;00m included_router._handle_selected(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1800: in _handle_selected
+    [0m[94mawait[39;49;00m original_route.handle(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:1279: in handle
+    [0m[94mawait[39;49;00m app(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:158: in app
+    [0m[94mawait[39;49;00m wrap_app_handling_exceptions(app, request)(scope, receive, send)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:53: in wrapped_app
+    [0m[94mraise[39;49;00m exc[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\starlette\_exception_handler.py[0m:42: in wrapped_app
+    [0m[94mawait[39;49;00m app(scope, receive, sender)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:144: in app
+    [0mresponse = [94mawait[39;49;00m f(request)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:706: in app
+    [0mraw_response = [94mawait[39;49;00m run_endpoint_function([90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\fastapi\routing.py[0m:352: in run_endpoint_function
+    [0m[94mreturn[39;49;00m [94mawait[39;49;00m dependant.call(**values)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mapp\api\v1\sessions.py[0m:120: in register_physician
+    [0mhashed_password=get_password_hash(request.password),[90m[39;49;00m
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mapp\core\security.py[0m:31: in get_password_hash
+    [0m[94mreturn[39;49;00m pwd_context.hash(truncated)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\context.py[0m:2258: in hash
+    [0m[94mreturn[39;49;00m record.hash(secret, **kwds)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:779: in hash
+    [0m[96mself[39;49;00m.checksum = [96mself[39;49;00m._calc_checksum(secret)[90m[39;49;00m
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:591: in _calc_checksum
+    [0m[96mself[39;49;00m._stub_requires_backend()[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2254: in _stub_requires_backend
+    [0m[96mcls[39;49;00m.set_backend()[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2156: in set_backend
+    [0m[94mreturn[39;49;00m owner.set_backend(name, dryrun=dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2163: in set_backend
+    [0m[94mreturn[39;49;00m [96mcls[39;49;00m.set_backend(name, dryrun=dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2188: in set_backend
+    [0m[96mcls[39;49;00m._set_backend(name, dryrun)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2311: in _set_backend
+    [0m[96msuper[39;49;00m(SubclassBackendMixin, [96mcls[39;49;00m)._set_backend(name, dryrun)[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:2224: in _set_backend
+    [0mok = loader(**kwds)[90m[39;49;00m
+         ^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:626: in _load_backend_mixin
+    [0m[94mreturn[39;49;00m mixin_cls._finalize_backend_mixin(name, dryrun)[90m[39;49;00m
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:421: in _finalize_backend_mixin
+    [0m[94mif[39;49;00m detect_wrap_bug(IDENT_2A):[90m[39;49;00m
+       ^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:380: in detect_wrap_bug
+    [0m[94mif[39;49;00m verify(secret, bug_hash):[90m[39;49;00m
+       ^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\utils\handlers.py[0m:792: in verify
+    [0m[94mreturn[39;49;00m consteq([96mself[39;49;00m._calc_checksum(secret), chk)[90m[39;49;00m
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <passlib.handlers.bcrypt._BcryptBackend object at 0x0000012D86909150>
+secret = b'01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345...7890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234'
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m_calc_checksum[39;49;00m([96mself[39;49;00m, secret):[90m[39;49;00m
+        [90m# bcrypt behavior:[39;49;00m[90m[39;49;00m
+        [90m#   secret must be bytes[39;49;00m[90m[39;49;00m
+        [90m#   config must be ascii bytes[39;49;00m[90m[39;49;00m
+        [90m#   returns ascii bytes[39;49;00m[90m[39;49;00m
+        secret, ident = [96mself[39;49;00m._prepare_digest_args(secret)[90m[39;49;00m
+        config = [96mself[39;49;00m._get_config(ident)[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(config, unicode):[90m[39;49;00m
+            config = config.encode([33m"[39;49;00m[33mascii[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>       [96mhash[39;49;00m = _bcrypt.hashpw(secret, config)[90m[39;49;00m
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[90m[39;49;00m
+[1m[31mE       ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])[0m
+
+[1m[31mC:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py[0m:655: ValueError
+---------------------------- Captured stdout setup ----------------------------
+Initializing MediKiosk backend...
+2026-08-29 02:09:36,514 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-08-29 02:09:36,514 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("patient_sessions")
+2026-08-29 02:09:36,514 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:36,515 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("physicians")
+2026-08-29 02:09:36,515 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:36,515 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_cases")
+2026-08-29 02:09:36,516 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:36,516 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("queue_tokens")
+2026-08-29 02:09:36,516 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:36,516 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_documents")
+2026-08-29 02:09:36,517 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:36,517 INFO sqlalchemy.engine.Engine COMMIT
+Database initialized
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("patient_sessions")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("physicians")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_cases")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("queue_tokens")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_documents")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2718 COMMIT
+------------------------------ Captured log call ------------------------------
+[33mWARNING [0m passlib.handlers.bcrypt:bcrypt.py:622 (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\admin\AppData\Roaming\Python\Python314\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+-------------------------- Captured stdout teardown ---------------------------
+Shutting down MediKiosk backend...
+[31m[1m____________________ TestRedFlags.test_chest_pain_red_flag ____________________[0m
+
+self = <app.tests.test_medikiosk.TestRedFlags object at 0x0000012D86815810>
+client = <starlette.testclient.TestClient object at 0x0000012D8686B240>
+patient_token = {'session_id': 'a5529ccc-aa62-4350-bb33-b975cc34169d', 'temp_id': 'TEMP-OPD-BEC1F949', 'token': 'eyJhbGciOiJIUzI1NiIsI...tYmIzMy1iOTc1Y2MzNDE2OWQiLCJleHAiOjE3OTA1NDE1ODB9.76yezfNzn-eE_ykQGKzbhpAFKuPDaCviavyFdq3Zwlo', 'token_type': 'bearer'}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtest_chest_pain_red_flag[39;49;00m([96mself[39;49;00m, client, patient_token):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Test severe chest pain triggers red flag."""[39;49;00m[90m[39;49;00m
+        session_id = patient_token[[33m"[39;49;00m[33msession_id[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+        token = patient_token[[33m"[39;49;00m[33mtoken[39;49;00m[33m"[39;49;00m][90m[39;49;00m
+    [90m[39;49;00m
+        client.post([90m[39;49;00m
+            [33mf[39;49;00m[33m"[39;49;00m[33m/api/v1/cases/[39;49;00m[33m{[39;49;00msession_id[33m}[39;49;00m[33m/conversation/start[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            json={[33m"[39;49;00m[33mlanguage_code[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33men[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mmode[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mallopathy[39;49;00m[33m"[39;49;00m},[90m[39;49;00m
+            headers={[33m"[39;49;00m[33mAuthorization[39;49;00m[33m"[39;49;00m: [33mf[39;49;00m[33m"[39;49;00m[33mBearer [39;49;00m[33m{[39;49;00mtoken[33m}[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Report severe chest pain[39;49;00m[90m[39;49;00m
+        client.post([90m[39;49;00m
+            [33mf[39;49;00m[33m"[39;49;00m[33m/api/v1/cases/[39;49;00m[33m{[39;49;00msession_id[33m}[39;49;00m[33m/conversation/respond[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            json={[33m"[39;49;00m[33manswer_text[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33msevere chest pain[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33minput_mode[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mtouch[39;49;00m[33m"[39;49;00m},[90m[39;49;00m
+            headers={[33m"[39;49;00m[33mAuthorization[39;49;00m[33m"[39;49;00m: [33mf[39;49;00m[33m"[39;49;00m[33mBearer [39;49;00m[33m{[39;49;00mtoken[33m}[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Report high severity[39;49;00m[90m[39;49;00m
+        client.post([90m[39;49;00m
+            [33mf[39;49;00m[33m"[39;49;00m[33m/api/v1/cases/[39;49;00m[33m{[39;49;00msession_id[33m}[39;49;00m[33m/conversation/respond[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            json={[33m"[39;49;00m[33manswer_text[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33m9 out of 10[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33minput_mode[39;49;00m[33m"[39;49;00m: [33m"[39;49;00m[33mtouch[39;49;00m[33m"[39;49;00m},[90m[39;49;00m
+            headers={[33m"[39;49;00m[33mAuthorization[39;49;00m[33m"[39;49;00m: [33mf[39;49;00m[33m"[39;49;00m[33mBearer [39;49;00m[33m{[39;49;00mtoken[33m}[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Check for red flags[39;49;00m[90m[39;49;00m
+        history_response = client.get([90m[39;49;00m
+            [33mf[39;49;00m[33m"[39;49;00m[33m/api/v1/cases/[39;49;00m[33m{[39;49;00msession_id[33m}[39;49;00m[33m/history[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+            headers={[33m"[39;49;00m[33mAuthorization[39;49;00m[33m"[39;49;00m: [33mf[39;49;00m[33m"[39;49;00m[33mBearer [39;49;00m[33m{[39;49;00mtoken[33m}[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        )[90m[39;49;00m
+        data = history_response.json()[90m[39;49;00m
+>       [94massert[39;49;00m data[[33m"[39;49;00m[33mhas_red_flags[39;49;00m[33m"[39;49;00m] == [94mTrue[39;49;00m[90m[39;49;00m
+[1m[31mE       assert False == True[0m
+
+[1m[31mapp\tests\test_medikiosk.py[0m:331: AssertionError
+---------------------------- Captured stdout setup ----------------------------
+Initializing MediKiosk backend...
+2026-08-29 02:09:40,634 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2026-08-29 02:09:40,634 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("patient_sessions")
+2026-08-29 02:09:40,634 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:40,635 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("physicians")
+2026-08-29 02:09:40,635 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:40,635 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_cases")
+2026-08-29 02:09:40,636 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:40,636 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("queue_tokens")
+2026-08-29 02:09:40,636 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:40,636 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("clinical_documents")
+2026-08-29 02:09:40,637 INFO sqlalchemy.engine.Engine [raw sql] ()
+2026-08-29 02:09:40,637 INFO sqlalchemy.engine.Engine COMMIT
+Database initialized
+----------------------------- Captured log setup ------------------------------
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2712 BEGIN (implicit)
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("patient_sessions")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("physicians")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_cases")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("queue_tokens")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 PRAGMA main.table_info("clinical_documents")
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:1848 [raw sql] ()
+[32mINFO    [0m sqlalchemy.engine.Engine:base.py:2718 COMMIT
+-------------------------- Captured stdout teardown ---------------------------
+Shutting down MediKiosk backend...
+[33m============================== warnings summary ===============================[0m
+app\core\database.py:22
+  D:\Projects\New folder\backend\app\core\database.py:22: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+app\schemas\auth.py:58
+  D:\Projects\New folder\backend\app\schemas\auth.py:58: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class PatientSessionResponse(BaseModel):
+
+app\schemas\auth.py:69
+  D:\Projects\New folder\backend\app\schemas\auth.py:69: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class PhysicianResponse(BaseModel):
+
+app\schemas\clinical_history.py:93
+  D:\Projects\New folder\backend\app\schemas\clinical_history.py:93: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ClinicalHistoryResponse(BaseModel):
+
+app\schemas\ocr.py:59
+  D:\Projects\New folder\backend\app\schemas\ocr.py:59: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OCRProcessingResult(BaseModel):
+
+app\schemas\ocr.py:84
+  D:\Projects\New folder\backend\app\schemas\ocr.py:84: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class OCRDocumentDetailResponse(BaseModel):
+
+app\schemas\queue.py:25
+  D:\Projects\New folder\backend\app\schemas\queue.py:25: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class QueueTokenResponse(BaseModel):
+
+app/tests/test_medikiosk.py: 14 warnings
+  D:\Projects\New folder\backend\app\api\v1\sessions.py:52: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    consent_timestamp=datetime.utcnow() if request.consent_given else None,
+
+app/tests/test_medikiosk.py: 72 warnings
+  C:\Users\admin\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+app/tests/test_medikiosk.py: 14 warnings
+  D:\Projects\New folder\backend\app\core\security.py:50: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expire = datetime.utcnow() + timedelta(minutes=settings.JWT_EXPIRATION_MINUTES)
+
+app/tests/test_medikiosk.py::TestConversation::test_conversation_response
+app/tests/test_medikiosk.py::TestConversation::test_extraction
+app/tests/test_medikiosk.py::TestNegation::test_english_negation
+app/tests/test_medikiosk.py::TestRedFlags::test_chest_pain_red_flag
+app/tests/test_medikiosk.py::TestRedFlags::test_chest_pain_red_flag
+app/tests/test_medikiosk.py::TestProvenance::test_voice_provenance
+  D:\Projects\New folder\backend\app\services\conversation\conversation_engine.py:111: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "timestamp": datetime.utcnow().isoformat(),
+
+app/tests/test_medikiosk.py::TestConversation::test_extraction
+  D:\Projects\New folder\backend\app\api\v1\clinical_history.py:133: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    flag["detected_at"] = datetime.utcnow().isoformat()
+
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_answer_submission
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_profile_calculation
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_profile_calculation
+app/tests/test_medikiosk.py::TestAYUSH::test_ayush_profile_calculation
+  D:\Projects\New folder\backend\app\api\v1\endpoints.py:64: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "timestamp": datetime.utcnow().isoformat(),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+[36m[1m=========================== short test summary info ===========================[0m
+[31mFAILED[0m app/tests/test_medikiosk.py::[1mTestAuthentication::test_physician_register[0m - ValueError: password cannot be longer than 72 bytes, truncate manually if n...
+[31mFAILED[0m app/tests/test_medikiosk.py::[1mTestAuthentication::test_physician_login[0m - ValueError: password cannot be longer than 72 bytes, truncate manually if n...
+[31mFAILED[0m app/tests/test_medikiosk.py::[1mTestRedFlags::test_chest_pain_red_flag[0m - assert False == True
+[31m================= [31m[1m3 failed[0m, [32m17 passed[0m, [33m118 warnings[0m[31m in 11.01s[0m[31m =================[0m

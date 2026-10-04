@@ -1,0 +1,9 @@
+Ayurveda count: 15
+First ID: ayurveda_body_build
+Options first Q: 3
+Option value: SLIM
+Option text keys: ['en', 'hi', 'ta']
+All options have value + text dict: verified
+Allopathy count: 21
+First ID: cc_main
+Last ID: alcohol

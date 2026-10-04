@@ -1,0 +1,145 @@
+================================================================================
+PATIENT FRONTEND FLOW TRACE — MediKiosk (frontend-patient)
+No files modified. Read-only trace from App.routes + page files + api.ts.
+================================================================================
+
+1. LANDING / ACCESS CHANNEL
+-----------------------------
+Route:    /
+File:     frontend-patient/src/pages/KioskLandingPage.tsx
+Data:     Local state only (mode: 'kiosk' | 'byod'); NO sessionStorage/API.
+API:      None called (pure landing UI).
+Next:     navigate('/welcome')
+
+2. LANGUAGE SELECTION
+---------------------
+Route:    /language
+File:     frontend-patient/src/pages/LanguagePage.tsx
+Data stored: sessionStorage.setItem('medikiosk_lang', selected);
+API called: languageApi.list() -> GET /api/v1/languages (api.ts line 24)
+Next:     navigate('/identity')
+
+3. IDENTITY / ABHA / GUEST
+--------------------------
+Route:    /identity
+File:     frontend-patient/src/pages/PatientIdentityPage.tsx
+Data stored:
+  - sessionStorage.setItem('medikiosk_token', res.token)
+  - sessionStorage.setItem('medikiosk_session', JSON.stringify(res))
+  - Reads from sessionStorage: medikiosk_lang, medikiosk_department, medikiosk_mode
+Payload to sessionApi.start (POST /api/v1/sessions/start):
+  is_guest, patient_name, patient_age, patient_gender, consent_given,
+  consent_scope: ['intake','voice','ocr','fhir'], abha_address/abha_id,
+  token_number, department, mode (normalized), language_code
+API:      sessionApi.start (api.ts line 19)
+Next:     navigate('/mode')
+
+4. SESSION CREATION
+-------------------
+This is embedded in step 3 (identity submit) above.
+Route on API: POST /api/v1/sessions/start
+Response (PatientSession): session_id, token, token_type
+Stored: medikiosk_token + medikiosk_session (full JSON)
+
+5. MODE SELECTION
+-----------------
+Route:    /mode
+File:     frontend-patient/src/pages/ModeSelectionPage.tsx
+Data stored:
+  sessionStorage.setItem('medikiosk_mode', selected); // 'allopathy' | 'ayush'
+  sessionStorage.setItem('medikiosk_stream', stream); // 'allopathy' or ayush stream id
+  sessionStorage.setItem('medikiosk_ayush_stream', ayushStream || '');
+Stream selection (AYUSH): only shown if selected === 'ayush'; options from AYUSH_STREAMS (types/index.ts). Stream mapped via streamFromMode() in lib/modeMap.ts.
+API:      None called (pure UI selection).
+Next:     navigate('/conversation')
+NOTE: Stream is implemented for AYUSH (5 streams: ayurveda/siddha/unani/homoeopathy/yoga_naturopathy).
+
+6. STREAM SELECTION
+-------------------
+Implemented inside /mode (ModeSelectionPage.tsx) when 'ayush' selected.
+File:     frontend-patient/src/pages/ModeSelectionPage.tsx + lib/modeMap.ts + types/index.ts
+Data:     sessionStorage 'medikiosk_ayush_stream' = selected stream id
+No separate route; embedded in mode selection.
+
+7. CONVERSATION / QUESTIONNAIRE
+-------------------------------
+Route:    /conversation
+File:     frontend-patient/src/pages/ConversationPage.tsx
+Data read:
+  sessionStorage.getItem('medikiosk_lang')
+  sessionStorage.getItem('medikiosk_session') -> parses session_id
+  sessionStorage.getItem('medikiosk_mode') -> stream/mode
+Stored during flow:
+  Answers submitted via conversationApi.respond (not to sessionStorage directly; sent to backend).
+  Progress/completion from backend response.
+API calls (api.ts):
+  conversationApi.start(sessionId, {mode, language_code}) -> POST /cases/{sessionId}/conversation/start
+  conversationApi.respond(sessionId, {answer_text, input_mode}) -> POST /cases/{sessionId}/conversation/respond
+  conversationApi.submit(sessionId) -> POST /cases/{sessionId}/history/submit (when complete -> navigates /documents)
+  voiceApi.transcribe(sessionId, audioBlob, lang) -> POST /cases/{sessionId}/voice/transcribe
+  voiceApi.speak(sessionId, text, lang) -> POST /cases/{sessionId}/conversation/speak
+Next (complete): navigate('/documents')
+NOTE: /ayush-intake route exists (AyushIntakePage.tsx) using local questions from AYUSH_QUESTIONNAIRES (types/index.ts) — this is an alternative/static questionnaire, not the main conversation flow.
+
+8. DOCUMENTS
+-----------
+Route:    /documents
+File:     frontend-patient/src/pages/DocumentUploadPage.tsx
+Data stored: sessionStorage.getItem('medikiosk_session') -> session_id for API
+API calls (api.ts):
+  ocrApi.list(sessionId) -> GET /cases/{sessionId}/ocr
+  ocrApi.upload(sessionId, file) -> POST /cases/{sessionId}/ocr (multipart)
+  ocrApi.detail(sessionId, docId) -> GET /cases/{sessionId}/ocr/{docId} (used by /ocr/verify/:docId)
+Data shown: ClinicalDocument[] (original_filename, processing_status, requires_verification, warnings)
+Next:     /queue (via button) or /ocr/verify/{docId} (if verification needed)
+
+AUXILIARY ROUTES NOT IN MAIN FLOW
+---------------------------------
+/welcome     -> WelcomePage.tsx (intro / step indicator, no API, navigates /language)
+/ayush-intake -> AyushIntakePage.tsx (static questionnaire from AYUSH_QUESTIONNAIRES, navigates /documents)
+/ocr/verify/:docId -> OCRVerifyPage.tsx (ocrApi.detail + manual save mock)
+/queue        -> QueueStatusPage.tsx (queueApi.list / token)
+
+SUMMARY OF EXACT ROUTES IN ORDER
+--------------------------------
+/ (landing)
+/welcome (optional intro)
+/language -> /identity -> /mode -> /conversation -> /documents
+
+SESSION STORAGE KEYS USED (in order of creation):
+medikiosk_lang        (step 2)
+medikiosk_token       (step 3)
+medikiosk_session     (step 3)
+medikiosk_department  (step 3, from WelcomePage/identity setup; also from welcome flow step 3)
+medikiosk_mode        (step 5)
+medikiosk_stream      (step 5)
+medikiosk_ayush_stream (step 5/6)
+
+API ENDPOINTS IN FLOW ORDER
+---------------------------
+GET /api/v1/languages
+POST /api/v1/sessions/start
+POST /cases/{sessionId}/conversation/start
+POST /cases/{sessionId}/conversation/respond
+POST /cases/{sessionId}/conversation/speak
+POST /cases/{sessionId}/voice/transcribe
+POST /cases/{sessionId}/history/submit
+GET /cases/{sessionId}/ocr
+POST /cases/{sessionId}/ocr
+
+FILES INVOLVED (read-only trace)
+--------------------------------
+App.tsx, main.tsx
+pages/KioskLandingPage.tsx
+pages/WelcomePage.tsx
+pages/LanguagePage.tsx
+pages/PatientIdentityPage.tsx
+pages/ModeSelectionPage.tsx
+pages/ConversationPage.tsx
+pages/AyushIntakePage.tsx (alternative questionnaire)
+pages/DocumentUploadPage.tsx
+pages/OCRVerifyPage.tsx
+pages/QueueStatusPage.tsx
+services/api.ts, services/auth.tsx
+lib/modeMap.ts, types/index.ts
+================================================================================

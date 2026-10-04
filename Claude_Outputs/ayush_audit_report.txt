@@ -1,0 +1,271 @@
+================================================================================
+AYUSH IMPLEMENTATION AUDIT — Read-only, no modifications
+Files: frontend-patient/src/types/index.ts, pages/AyushIntakePage.tsx, lib/modeMap.ts, services/api.ts
+Date: 2026-08-31
+================================================================================
+
+1. CURRENT AYUSH QUESTION SCHEMA / TYPE
+-----------------------------------------
+File: frontend-patient/src/types/index.ts  (lines 202-209)
+
+export interface AyushQuestion {
+  question_id: string;           // e.g. body_build, cold_sensitivity
+  section: string;               // e.g. Constitution, Digestion, General
+  text: Record<string, string>;  // { en: ..., hi: ... }
+  field_type: select | multiselect | text;
+  options: { value: string; label: string; label_hi: string }[];
+  scoring_key?: string;          // e.g. body_build, cold_sensitivity
+}
+
+
+2. CURRENT AYUSH QUESTION DATA (ACTUAL CONTENT)
+----------------------------------------------
+File: frontend-patient/src/types/index.ts  (lines 219-233)
+Record<AyushStream, AyushQuestion[]>
+
+ayurveda:  7 questions  (body_build, cold_sensitivity, heat_sensitivity, appetite, bowel_habits, sleep_pattern, skin_type)
+siddha:    []           EMPTY PLACEHOLDER
+unani:     []           EMPTY PLACEHOLDER
+homoeopathy: []         EMPTY PLACEHOLDER
+yoga_naturopathy: []    EMPTY PLACEHOLDER
+
+Only ayurveda has real content. All other streams are empty arrays.
+
+Full ayurveda questions (types/index.ts 221-227):
+
+  question_id: body_build
+  section: Constitution
+  text: en=What is your general body build? / hi=आपका शरीर का आकार कैसा है?
+  options: slim/Thin+Lean/पतला+दुबला | medium/Medium/मध्यम | heavy/Heavy+Stocky/भारी+स्थूल
+  scoring_key: body_build
+
+  question_id: cold_sensitivity
+  section: Constitution
+  text: en=Do you feel cold easily? / hi=क्या आपको आसानी से ठंड लगती है?
+  options: yes/Yes+always/हाँ+हमेशा | sometimes/Sometimes/कभी-कभी | no/No/नहीं
+  scoring_key: cold_sensitivity
+
+  question_id: heat_sensitivity
+  section: Constitution
+  text: en=Do you feel hot easily? / hi=क्या आपको आसानी से गर्मी लगती है?
+  options: yes/Yes+always/हाँ+हमेशा | sometimes/Sometimes/कभी-कभी | no/No/नहीं
+  scoring_key: heat_sensitivity
+
+  question_id: appetite
+  section: Digestion
+  text: en=How is your appetite? / hi=आपकी भूख कैसी है?
+  options: high/Strong+Always+hungry/तीव्र+हमेशा+भूख | regular/Regular/नियमित | low/Low+Irregular/कम+अनियमित
+  scoring_key: appetite
+
+  question_id: bowel_habits
+  section: Digestion
+  text: en=How are your bowel habits? / hi=आपकी मलत्याग की आदतें कैसी हैं?
+  options: regular/Regular/नियमित | constipated/Constipated/कब्ज | loose/Loose/दस्त
+  scoring_key: bowel_habits
+
+  question_id: sleep_pattern
+  section: General
+  text: en=How is your sleep? / hi=आपकी नींद कैसी है?
+  options: good/Good+Deep/अच्छी+गहरी | disturbed/Disturbed+Light/अशांत+हल्की | insomnia/Insomnia/अनिद्रा
+  scoring_key: sleep_pattern
+
+  question_id: skin_type
+  section: General
+  text: en=Your skin type is... / hi=आपकी त्वचा का प्रकार है...
+  options: dry/Dry+Rough/रूखी+खुरदरी | oily/Oily+Greasy/तैलीय+चिकनी | normal/Normal+Balanced/सामान्य+संतुलित
+  scoring_key: skin_type
+
+
+3. HOW ANSWERS ARE STORED
+-------------------------
+File: frontend-patient/src/pages/AyushIntakePage.tsx  (lines 15, 33-43)
+
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  handleSelect stores by question_id -> selected option value (string):
+    setAnswers(a => ({ ...a, [current.question_id]: value }));
+
+  State is React local state only. No persistence to backend within AyushIntakePage.
+  On completion: navigate(/documents) — answers are lost unless previously sent via ayushApi.answer.
+
+Backend profile type (types/index.ts 194-200):
+
+  export interface AyushProfile {
+    stream: AyushStream;
+    dominant_dosha?: string;           // e.g. vata, pitta, kapha — NEVER SET currently
+    scores: Record<string, number>;     // NEVER POPULATED currently
+    answers: Record<string, string>;   // key=question_id, value=option value string
+    completion_percentage?: number;
+  }
+
+Backend API endpoints (services/api.ts 49-52):
+
+  ayushApi.answer(sessionId, {question_id, answer_text, input_mode, language})
+    -> POST /cases/{sessionId}/ayush/answer
+
+  ayushApi.profile(sessionId)
+    -> GET /cases/{sessionId}/ayush/profile
+
+  NOTE: AyushIntakePage does NOT call ayushApi.answer. Answers are never sent to backend.
+
+
+4. HOW MULTILINGUAL OPTIONS ARE REPRESENTED
+-------------------------------------------
+Per option object:
+  { value: string; label: string; label_hi: string }
+
+  - value    : internal English keyword (language-independent)
+  - label    : English display string
+  - label_hi : Hindi display string
+
+Per question object:
+  { en: string; hi: string }
+
+  - en: English question text
+  - hi: Hindi question text
+
+Language switching logic (AyushIntakePage.tsx line 31):
+  const getQText = (q) => isHindi ? (q.text.hi || q.text.en) : q.text.en;
+
+Option display (AyushIntakePage.tsx line 78):
+  isHindi ? opt.label_hi : opt.label
+
+Only English (label) and Hindi (label_hi) exist for option display.
+No Tamil labels (label_ta), no Telugu, no other Indian languages.
+
+
+5. HOW INTERNAL ANSWER VALUES ARE REPRESENTED
+---------------------------------------------
+All internal option values are fixed English keywords. They are language-independent:
+
+  slim, medium, heavy
+  yes, sometimes, no
+  high, regular, low
+  constipated, loose
+  good, disturbed, insomnia
+  dry, oily, normal
+
+These values are the SAME regardless of UI language.
+The value is bound to the option object itself, not derived from the label.
+
+
+6. WHETHER TAMIL / HINDI ANSWERS MAP TO SAME INTERNAL VALUES AS ENGLISH
+-----------------------------------------------------------------------
+YES — because option values are hardcoded English keywords in the option definition.
+
+Example (cold_sensitivity):
+  Hindi option "हाँ, हमेशा"    -> internal value: yes
+  English option "Yes, always" -> internal value: yes
+
+Both map to the same internal value: yes.
+
+There is no Tamil option data at all (no label_ta field, no text.ta).
+If Tamil were added, it would need label_ta entries with the SAME value keys (yes/no/etc.).
+No translation mapping layer exists; value is the authoritative identifier.
+
+
+7. CURRENT AYURVEDIC MAPPING / SCORING LOGIC
+-------------------------------------------
+File: frontend-patient/src/pages/AyushIntakePage.tsx
+
+NO scoring logic exists. The page only:
+
+  1. Loads questions from AYUSH_QUESTIONNAIRES[stream]
+  2. Shows one question at a time
+  3. Stores selected value in answers state (Record<question_id, value>)
+  4. Increments question index
+  5. On last question: setComplete(true) -> shows completion card
+  6. On Continue: navigate(/documents)
+
+No computation of dosha scores, prakriti, agni, koshtha, or any Ayurvedic mapping.
+
+Artifacts that LOOK like scoring infrastructure but are NOT used:
+
+  - scoring_key on each question (e.g. scoring_key: body_build)
+    NOT READ anywhere in the codebase.
+
+  - AyushProfile.dominant_dosha: string
+    Defined in types (line 110) but never assigned anywhere.
+
+  - AyushProfile.scores: Record<string, number>
+    Defined in types (line 111) but never populated anywhere.
+
+  - progress bar in UI = currentIdx / questions.length
+    Purely linear UI progress, not Ayurvedic scoring.
+
+  - completion_percentage in AyushProfile type
+    Never set by the intake page.
+
+
+8. CURRENT OUTPUT FORMAT FOR AYURVEDIC CONCEPTS
+-----------------------------------------------
+Concept          | Computed? | How / Where
+-----------------|-----------|-------------------------------------
+Prakriti         | NO        | Not present anywhere in codebase
+Vata             | NO        | Not computed; only mentioned in types as dominant_dosha type hint
+Pitta            | NO        | Same
+Kapha            | NO        | Same
+Agni             | NO        | Not present anywhere
+Koshtha          | NO        | Not present anywhere
+Satva            | NO        | Not present anywhere
+Ahara-Vihara     | NO        | Not present anywhere
+
+The only AYUSH output structures that exist:
+
+  - AyushProfile type (types/index.ts 194-200)
+      { stream, dominant_dosha, scores, answers, completion_percentage }
+      All fields except stream and answers are optional and never populated.
+
+  - ClinicalCase.ayush_profile (types/index.ts 108-113)
+      { stream, dominant_dosha, scores, answers }
+      Mirrors AyushProfile; also never populated by frontend.
+
+  - ayushApi.profile response shape (services/api.ts 52)
+      { session_id, ayush_profile: AyushProfile, status, completion_percentage }
+      Backend endpoint exists; frontend never fetches it in current flow.
+
+
+9. OTHER STREAMS — PLACEHOLDERS OR REAL QUESTIONNAIRES?
+-------------------------------------------------------
+File: frontend-patient/src/types/index.ts  (lines 229-232)
+
+  siddha:           []  — EMPTY PLACEHOLDER (zero questions)
+  unani:            []  — EMPTY PLACEHOLDER (zero questions)
+  homoeopathy:      []  — EMPTY PLACEHOLDER (zero questions)
+  yoga_naturopathy: []  — EMPTY PLACEHOLDER (zero questions)
+
+Only ayurveda has 7 real questions. All other four streams have empty arrays.
+
+AyushIntakePage.tsx handles this gracefully: if AYUSH_QUESTIONNAIRES[stream] is empty,
+the stream selector works but no questions appear and completion fires immediately on entry.
+
+
+================================================================================
+ADDITIONAL OBSERVATIONS
+================================================================================
+
+Route availability:
+  /ayush-intake exists in App.tsx but is NOT in the main patient flow.
+  Main flow: /conversation (backend-driven) -> /documents
+  /ayush-intake is a standalone static questionnaire, separate from the main flow.
+
+API endpoints defined but unused by intake page:
+  ayushApi.answer and ayushApi.profile are declared in services/api.ts (lines 49-52)
+  but AyushIntakePage never calls them. Answers never leave the React state.
+
+ConversationPage vs AyushIntakePage:
+  ConversationPage (/conversation) uses backend conversation endpoints.
+  AyushIntakePage (/ayush-intake) uses static local AYUSH_QUESTIONNAIRES data.
+  These are two separate, independent questionnaire paths.
+
+
+================================================================================
+END AUDIT — No files edited. No code changed.
+Source files read:
+  frontend-patient/src/types/index.ts
+  frontend-patient/src/pages/AyushIntakePage.tsx
+  frontend-patient/src/lib/modeMap.ts
+  frontend-patient/src/services/api.ts
+  frontend-patient/src/App.tsx
+  frontend-patient/src/pages/ModeSelectionPage.tsx
+================================================================================
